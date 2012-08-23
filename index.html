@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   <title>Gaia-UI Building Blocks</title>
-  <style type="text/css">
+  <style>
       @import url("fonts.css");
 
       html, body {
@@ -93,8 +93,10 @@
         opacity: 0.4;
         cursor: default;
       }
-      nav .disabled a { cursor: default; }
 
+      nav .disabled a {
+        cursor: default;
+      }
 
       iframe {
         float: left;
@@ -118,6 +120,7 @@
       section#metadata button {
         float: right;
       }
+
       section#metadata h1 {
         font: 20px/1em "Open Sans", Sans-serif;
         font-weight: 600;
@@ -137,25 +140,55 @@
       section#metadata section { color: rgba(255, 255, 255, 0.75); }
       section#metadata section ul { padding-left: 30px; }
 
+      /* Code preview and download */
+      section#metadata .codepreview p {
+        margin: 0 0 10px;
+        cursor: pointer;
+      }
+
+      section#metadata .codepreview p:before {
+        content: "";
+        display: inline-block;
+        vertical-align: middle;
+        width: 0;
+        height: 0;
+        border: solid 5px transparent;
+        border-left-color: rgba(255, 255, 255, 0.6);
+      }
+
+      section#metadata .codepreview p:hover:before {
+        border-left-color: rgba(255, 255, 255, 0.8);
+      }
+
+      section#metadata .codepreview p[data-state="active"]:before {
+        border-top-color: rgba(255, 255, 255, 0.6);
+        border-left-color: transparent;
+        margin: 0 5px 0 -5px;
+      }
+
       section#metadata code {
-        width: 100%;
+        width: 60%;
         -moz-box-sizing: border-box;
-        -moz-transition: all 0.2s ease;
+        -moz-transition: all 0.4s ease;
         display: block;
         font-size: 12px;
         color: rgba(255, 255, 255, 0.4);
+        margin: 0;
+        background: rgba(0, 0, 0, 0.1);
+        height: 0;
+        overflow: auto;
+      }
+
+      section#metadata code[data-state="active"] {
+        height: 140px;
         padding: 10px;
         margin: 10px;
-        background: rgba(0, 0, 0, 0.1);
         border: solid 1px rgba(0, 0, 0, 0.1);
-        max-height: 140px;
-        overflow: auto;
       }
 
       section#metadata code:hover {
         color: rgba(255, 255, 255, 0.7);
       }
-
 
   </style>
    <script type="text/javascript">
@@ -194,11 +227,11 @@
         if ( url == "" ) { url = "index.html" }
         var el = document.querySelector("a[href='"+url+"']")
       } else {
-          var el = data.target;
+        var el = data.target;
       }
 
       if (el.tagName.toLowerCase() != 'a')
-            return;
+        return;
 
       var url = el.getAttribute('href').replace(/^#/, '');
       if (/\/$/.test(url))
@@ -216,7 +249,7 @@
           var parent = link.parentNode.parentNode.parentNode;
 
           if ( parent.className == "submenu") {
-              parent.setAttribute("data-state", "open");
+            parent.setAttribute("data-state", "open");
           }
 
         } else { var current = ""; }
@@ -236,6 +269,7 @@
         for ( var i in requires) {
           tpl += "<li>"+requires[i]+"</li>"
         }
+
         requires = tpl;
 
         meta.querySelector("[data-placeholder='title']").innerHTML = title;
@@ -252,7 +286,7 @@
         var htmlPreview = document.getElementById("HTML");
 
         //Cleaning old code
-        htmlPreview.innerHTML = null;
+        htmlPreview.innerHTML = "Hover & click on the preview to grab the code!";
         cssPreview.innerHTML = null;
           
         //Get clean url for code preview
@@ -267,7 +301,11 @@
 
         var style = rawURL+"style.css";
         appendCssCode(style);
-
+        
+        //Auto append html if there is only one codeexample
+        if ( hoverTargets.length == 1 ) {
+          appendHtmlCode(hoverTargets[0]);
+        }
 
         for ( var i in hoverTargets ) {
           if ( hoverTargets[i].nodeType == 1 ) {
@@ -391,36 +429,54 @@
             }
           }
         });
-       
+
+        //Toggle code preview
+        var togglers = document.querySelectorAll("[data-toggle]");
+
+        for (var i in togglers) if (togglers.hasOwnProperty(i)) {
+          togglers[i].addEventListener("click", function(){
+            var element = this.getAttribute("data-toggle");
+            var target = document.getElementById(element).parentNode;
+
+            if ( target.getAttribute("data-state") == "active" ) {
+              target.removeAttribute("data-state")
+              this.removeAttribute("data-state")
+            } else {
+              target.setAttribute("data-state", "active")
+              this.setAttribute("data-state", "active")
+            }
+          });
+        }
+    
     });
   </script>
 </head>
 <body>
   <h1 style="display: none"><a href="index.html">GAIA Building Blocks</a></h1>  
   <nav id="nav" onclick="loadURL(event)">
-    <h2>Menus + Dialogues</h2>
+    <h2>Menus + Dialogs</h2>
     <ol>
       <li class="submenu">
-          <a href="#menus-dialogues/prompt/">Prompt</a>
+          <a href="#menus-dialogs/prompt/">Prompt</a>
           <ol>
-            <li><a href="#menus-dialogues/prompt/">Default</a></li>
-            <li><a href="#menus-dialogues/prompt/content.html">With content</a></li>
-            <li><a href="#menus-dialogues/prompt/notitle.html">w/o Title</a></li>
-            <li><a href="#menus-dialogues/prompt/edit.html">Edit</a></li>
+            <li><a href="#menus-dialogs/prompt/">Default</a></li>
+            <li><a href="#menus-dialogs/prompt/content.html">With content</a></li>
+            <li><a href="#menus-dialogs/prompt/notitle.html">w/o Title</a></li>
+            <li><a href="#menus-dialogs/prompt/edit.html">Edit</a></li>
           </ol>
       </li>
-      <li><a href="#menus-dialogues/actionmenu/">Action menu</a></li>
-      <li><a href="#menus-dialogues/objectmenu/">Object menu</a></li>
+      <li><a href="#menus-dialogs/actionmenu/">Action menu</a></li>
+      <li><a href="#menus-dialogs/objectmenu/">Object menu</a></li>
       <li class="submenu">
-        <a href="#menus-dialogues/valueselector/">Value selector</a>
+        <a href="#menus-dialogs/valueselector/">Value selector</a>
         <ol>
-            <li><a href="#menus-dialogues/valueselector/index.html">Single value</a></li>
-            <li><a href="#menus-dialogues/valueselector/multiple.html">Multiple value</a></li>
-            <li><a href="#menus-dialogues/valueselector/time/index.html">Time</a></li>
-            <li><a href="#menus-dialogues/valueselector/date/index.html">Date</a></li>
+            <li><a href="#menus-dialogs/valueselector/index.html">Single value</a></li>
+            <li><a href="#menus-dialogs/valueselector/multiple.html">Multiple value</a></li>
+            <li><a href="#menus-dialogs/valueselector/time/index.html">Time</a></li>
+            <li><a href="#menus-dialogs/valueselector/date/index.html">Date</a></li>
           </ol>
       </li>
-      <li><a href="#menus-dialogues/banner/">Banner</a></li>
+      <li><a href="#menus-dialogs/banner/">Banner</a></li>
     </ol>
 
     <h2>Other</h2>
@@ -458,10 +514,13 @@
         </section>
     </section>
 
-    <section>
+    <section class="codepreview">
+      <p data-toggle="HTML"><strong>HTML</strong></p>
       <code class="language-html">
         <pre id="HTML">html</pre>
       </code>
+
+      <p data-toggle="CSS"><strong>CSS</strong></p>
       <code class="language-css">
         <pre id="CSS">css</pre>
       </code>
