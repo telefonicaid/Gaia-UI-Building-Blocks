@@ -356,12 +356,16 @@
         }
 
         function appendHtmlCode(element) {
-          var cloned = element.cloneNode();
-          cloned.removeAttribute("data-codeexample");
-          var temporalNode = documentPreview.createElement("div");
-          temporalNode.appendChild(cloned);
-          delete temporalNode;
-
+          if ( element.getAttribute("data-codetrash") == "true" ) {
+            var temporalNode = element;
+          } else {
+            var cloned = element.cloneNode();
+            cloned.removeAttribute("data-codeexample");
+            var temporalNode = documentPreview.createElement("div");
+            temporalNode.appendChild(cloned);
+            delete temporalNode;  
+          }
+          
           var finalCode = temporalNode.innerHTML;
 
           //Cleaning code TO DO
