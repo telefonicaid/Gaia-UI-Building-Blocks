@@ -286,9 +286,9 @@
         var cssPreview = document.getElementById("CSS");
         var htmlPreview = document.getElementById("HTML");
 
-        //Cleaning old code
-        htmlPreview.innerHTML = "Hover & click on the preview to grab the code!";
-        cssPreview.innerHTML = null;
+        //Setting empty states
+        htmlPreview.innerHTML = "Hover & click on the component preview to grab the code";
+        cssPreview.innerHTML = "Doesn't have custom CSS, only the required ones above";
           
         //Get clean url for code preview
         var fragmentedURL = url.split("/");
@@ -301,7 +301,6 @@
         }
 
         var style = rawURL+"style.css";
-        appendCssCode(style);
         
         //Auto append html if there is only one codeexample
         if ( hoverTargets.length == 1 ) {
@@ -328,6 +327,8 @@
           }
         }
 
+        appendCssCode(style);
+
         function addHighligth(element) {
             var tWidth = element.clientWidth;
             var tHeight = element.clientHeight;
@@ -347,7 +348,6 @@
             highlight.style.border = "solid 1px rgba(237, 140, 1, 0.4)";
 
             documentPreview.querySelector("body").appendChild(highlight);
-
         }
 
         function removeHighligth() {
@@ -356,7 +356,6 @@
         }
 
         function appendHtmlCode(element) {
-
           var cloned = element.cloneNode();
           cloned.removeAttribute("data-codeexample");
           var temporalNode = documentPreview.createElement("div");
@@ -373,20 +372,18 @@
         }
 
         function appendCssCode(style) {
-            // Requests the css code
-            var xhrCSS = new XMLHttpRequest();
-            xhrCSS.open('GET', style, true);
-            xhrCSS.send("");
-            xhrCSS.onreadystatechange = function() {
-              if(xhrCSS.readyState === 4) {
-                  //Appends it
-                  cssPreview.innerHTML = xhrCSS.responseText;
-              }     
-            };
+          // Requests the css code
+          var xhrCSS = new XMLHttpRequest();
+          xhrCSS.open('GET', style, true);
+          xhrCSS.onreadystatechange = function() {   
+            if(xhrCSS.readyState === 4) {
+                //Appends it
+                cssPreview.innerHTML = xhrCSS.responseText;
+            }     
+          }
+          xhrCSS.send("");
         }
-
-
-      };
+      }
     }
 
 
