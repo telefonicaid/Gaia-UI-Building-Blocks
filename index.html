@@ -296,13 +296,12 @@
           appendHtmlCode(hoverTargets[0]);
         }
 
-
         //Download button
         document.getElementById("downloadPackage").addEventListener("click", function(){
           zipPackage();
         });
 
-
+        //Add event listeners for highlighting
         for ( var i in hoverTargets ) {
           if ( hoverTargets[i].nodeType == 1 ) {
             hoverTargets[i].addEventListener("mouseover", function(e){            
@@ -377,7 +376,7 @@
             if(xhrCSS.readyState === 4) {
                 //Appends it
                 cssPreview.innerHTML = xhrCSS.responseText;
-                var hasOwnCSS = true;
+                return hasOwnCSS = true;
             }     
           }
           xhrCSS.send("");
@@ -406,6 +405,7 @@
           zip.file(htmlName, htmlContent);
 
           //Adds CSS files
+          console.log(hasOwnCSS + " ZIP");
           if (hasOwnCSS == true) {
             var cssContent = cssPreview.innerHTML;
             var css = zip.folder("css");
